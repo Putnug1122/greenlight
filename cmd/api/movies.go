@@ -1,9 +1,9 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/putnug1122/greenlight/internal/data"
 	"github.com/putnug1122/greenlight/internal/validator"
@@ -58,13 +58,14 @@ func (app *application) showMovieHandler(w http.ResponseWriter, r *http.Request)
 		app.notFoundResponse(w, r)
 	}
 
-	movie := data.Movie{
-		ID:        id,
-		CreatedAt: time.Now(),
-		Title:     "The Lord of The Rings",
-		Runtime:   120,
-		Genres:    []string{"drama", "adventure", "action"},
-		Version:   1,
+	movie, err := app.models.Movies.Get(id)
+	if err != nil {
+		switch {
+		case errors.Is(err, data.ErrRecordNotFound):
+			app.notFoundResponse(w, r)
+		default:
+			app.serverErrorResponse(w, r, err)
+		}
 	}
 
 	err = app.writeJSON(w, http.StatusOK, envelope{"movie": movie}, nil)
