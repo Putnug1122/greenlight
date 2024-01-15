@@ -7,6 +7,7 @@ import (
 	"github.com/putnug1122/greenlight/internal/mailer"
 	"net/http"
 	"os"
+	"sync"
 	"time"
 
 	_ "github.com/lib/pq"
@@ -44,6 +45,7 @@ type application struct {
 	logger *jsonlog.Logger
 	models data.Models
 	mailer mailer.Mailer
+	wg     sync.WaitGroup
 }
 
 func main() {
