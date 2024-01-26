@@ -4,11 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"flag"
-	"github.com/putnug1122/greenlight/internal/mailer"
 	"net/http"
 	"os"
 	"sync"
 	"time"
+
+	"github.com/putnug1122/greenlight/internal/mailer"
 
 	_ "github.com/lib/pq"
 	"github.com/putnug1122/greenlight/internal/data"
@@ -68,7 +69,7 @@ func main() {
 	flag.IntVar(&cfg.smtp.port, "smtp-port", 25, "SMTP port")
 	flag.StringVar(&cfg.smtp.username, "smtp-username", "4f624ecf73f3a9", "SMTP username")
 	flag.StringVar(&cfg.smtp.password, "smtp-password", "be276243d86d34", "SMTP password")
-	flag.StringVar(&cfg.smtp.sender, "smtp-sender", "Greenlight <no-reply@greenlight.alexedwards.net>", "SMTP sender")
+	flag.StringVar(&cfg.smtp.sender, "smtp-sender", "Greenlight <no-reply@putnug1122@gmail.com>", "SMTP sender")
 
 	flag.Parse()
 
