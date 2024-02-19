@@ -3,13 +3,14 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/putnug1122/greenlight/internal/data"
-	"github.com/putnug1122/greenlight/internal/validator"
 	"net"
 	"net/http"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/putnug1122/greenlight/internal/data"
+	"github.com/putnug1122/greenlight/internal/validator"
 
 	"golang.org/x/time/rate"
 )
@@ -155,4 +156,25 @@ func (app *application) requireActivatedUser(next http.HandlerFunc) http.Handler
 	})
 
 	return app.requireAuthenticatedUser(fn)
+}
+
+func (app *application) requirePermission(code string, next http.HandlerFunc) http.HandlerFunc {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		user := app.contextGetUser(r)
+
+		permissions, err := app.models.Permissions.GetAllForUser(user.ID)
+		if err != nil {
+			app.serverErrorResponse(w, r, err)
+			return
+		}
+
+		if !permissions.Include(code) {
+			app.notFoundResponse(w, r)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	}
+
+	return app.requireActivatedUser(fn)
 }
