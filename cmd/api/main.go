@@ -20,9 +20,10 @@ import (
 	"github.com/putnug1122/greenlight/internal/jsonlog"
 )
 
-const version = "1.0.0"
-
-var buildTime string
+var (
+	buildTime string
+	version   string
+)
 
 type config struct {
 	port int
